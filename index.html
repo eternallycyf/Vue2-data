@@ -1,0 +1,41 @@
+<script>
+  function Vue(options) {
+    var _data = options.data();
+    var _this = this;
+
+    for (var k in _data) {
+      // 如果用 this.a => get => _data.a
+      // 需要独立作用域
+      // ; (function (k) {
+      //   Object.defineProperty(_this, k, {
+      //     get() {
+      //       return _data[k]
+      //     },
+      //     set(newValue) {
+      //       _data[k] = newValue;
+      //     }
+      //   })
+      // })(k)
+
+      ; (function () {
+        _this.__defineGetter__(k, function () {
+          return _data[k]
+        });
+        _this.__defineSetter__(k, function (newValue) {
+          _data[k] = newValue;
+        })
+      })(k)
+
+    }
+  }
+  var vm = new Vue({
+    data() {
+      return {
+        a: 1,
+        b: 2
+      }
+    }
+  })
+  vm.a //1
+  console.log(vm.a)
+</script>
